@@ -73,6 +73,19 @@ export default function AdminPage() {
   const VIEW_EMPLOYEE_PAGE_SIZE = 9;
   const HISTORY_PAGE_SIZE = 5;
 
+
+  // NEW: mobile sidebar state
+const [sidebarOpen, setSidebarOpen] = useState(false);
+
+// close sidebar after navigating (mobile)
+function goTab(tab: TabKey) {
+  setActiveTab(tab);
+  if (typeof window !== "undefined" && window.matchMedia("(max-width: 1024px)").matches) {
+    setSidebarOpen(false);
+  }
+}
+
+
   function fmtLocalDate(d: Date) {
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -580,16 +593,31 @@ export default function AdminPage() {
 
   return (
     <div className="dashboard-container">
-      <div className="sidebar">
+      {/* <div className="sidebar">
         <div className="sidebar-header">
           <h1 className="sidebar-title">AttendanceHub</h1>
           <p className="sidebar-subtitle">Admin Portal</p>
-        </div>
+        </div> */}
+        <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
+  {/* NEW: mobile-only close/header */}
+  <div className="sidebar-mobile-header">
+    <div>
+      <h1 className="sidebar-title">AttendanceHub</h1>
+      <p className="sidebar-subtitle">Admin Portal</p>
+    </div>
+    <button
+      className="sidebar-close-btn"
+      onClick={() => setSidebarOpen(false)}
+      aria-label="Close menu"
+    >
+      ✕
+    </button>
+  </div>
 
         <nav className="sidebar-nav">
           <button
             className={`nav-item ${activeTab === "insights" ? "active" : ""}`}
-            onClick={() => setActiveTab("insights")}
+            onClick={() => goTab("insights")}
           >
             <svg className="nav-icon" fill="currentColor" viewBox="0 0 20 20">
               <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
@@ -598,7 +626,7 @@ export default function AdminPage() {
           </button>
           <button
             className={`nav-item ${activeTab === "create" ? "active" : ""}`}
-            onClick={() => setActiveTab("create")}
+            onClick={() => goTab("create")}
           >
             <svg className="nav-icon" fill="currentColor" viewBox="0 0 20 20">
               <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
@@ -607,7 +635,7 @@ export default function AdminPage() {
           </button>
           <button
             className={`nav-item ${activeTab === "directory" ? "active" : ""}`}
-            onClick={() => setActiveTab("directory")}
+            onClick={() => goTab("directory")}
           >
             <svg className="nav-icon" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
@@ -616,7 +644,7 @@ export default function AdminPage() {
           </button>
           <button
             className={`nav-item ${activeTab === "attendance" ? "active" : ""}`}
-            onClick={() => setActiveTab("attendance")}
+            onClick={() => goTab("attendance")}
           >
             <svg className="nav-icon" fill="currentColor" viewBox="0 0 20 20">
               <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 7h12v9H4V7z" />
@@ -628,7 +656,7 @@ export default function AdminPage() {
             className={`nav-item ${
               activeTab === "view-attendance" ? "active" : ""
             }`}
-            onClick={() => setActiveTab("view-attendance")}
+            onClick={() => goTab("view-attendance")}
           >
             <svg className="nav-icon" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
@@ -644,7 +672,7 @@ export default function AdminPage() {
             className={`nav-item ${
               activeTab === "employee-stats" ? "active" : ""
             }`}
-            onClick={() => setActiveTab("employee-stats")}
+            onClick={() => goTab("employee-stats")}
           >
             <svg className="nav-icon" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
@@ -665,9 +693,17 @@ export default function AdminPage() {
           </button>
         </div>
       </div>
+            {/* NEW: mobile overlay */}
+{sidebarOpen && (
+  <div
+    className="sidebar-overlay"
+    onClick={() => setSidebarOpen(false)}
+    aria-hidden="true"
+  />
+)}
 
       <div className="main-content">
-        <div className="main-header">
+        {/* <div className="main-header">
           <h1 className="page-title">
             {activeTab === "insights"
               ? "Insights & Analytics"
@@ -682,7 +718,35 @@ export default function AdminPage() {
               : "Employee Stats"}
           </h1>
           <div className="user-info">Logged in as: {session.user?.email}</div>
-        </div>
+        </div> */}
+        <div className="main-header">
+  {/* NEW: mobile hamburger */}
+  <button
+    className="hamburger-btn"
+    onClick={() => setSidebarOpen(true)}
+    aria-label="Open menu"
+  >
+    <span />
+    <span />
+    <span />
+  </button>
+
+  <h1 className="page-title">
+    {activeTab === "insights"
+      ? "Insights & Analytics"
+      : activeTab === "create"
+      ? "Create Employee"
+      : activeTab === "directory"
+      ? "Employee Directory"
+      : activeTab === "attendance"
+      ? "Attendance Management"
+      : activeTab === "view-attendance"
+      ? "View Attendance"
+      : "Employee Stats"}
+  </h1>
+  <div className="user-info">Logged in as: {session.user?.email}</div>
+</div>
+
 
         <div className="content-area">
           {activeTab === "create" && (
@@ -803,7 +867,7 @@ export default function AdminPage() {
                   {dirLoading ? "Refreshing…" : "Refresh"}
                 </button>
               </div>
-
+                <div className="table-scroll">
               <table className="data-table">
                 <thead>
                   <tr>
@@ -1109,6 +1173,7 @@ export default function AdminPage() {
                   )}
                 </tbody>
               </table>
+              </div>
 
               {/* Directory Pagination */}
               {users.length > DIRECTORY_PAGE_SIZE && (
@@ -1143,7 +1208,7 @@ export default function AdminPage() {
                       Previous
                     </button>
 
-                    <div className="pagination-numbers">
+                    <div className="pagination-numbers scroller-x">
                       {Array.from(
                         {
                           length: Math.ceil(users.length / DIRECTORY_PAGE_SIZE),
@@ -1513,7 +1578,7 @@ export default function AdminPage() {
                             Previous
                           </button>
 
-                          <div className="pagination-numbers">
+                          <div className="pagination-numbers scroller-x">
                             {Array.from(
                               {
                                 length: Math.ceil(
@@ -1683,7 +1748,7 @@ export default function AdminPage() {
                         Previous
                       </button>
 
-                      <div className="pagination-numbers">
+                      <div className="pagination-numbers scroller-x">
                         {Array.from(
                           {
                             length: Math.ceil(
@@ -1901,7 +1966,7 @@ export default function AdminPage() {
                                 Previous
                               </button>
 
-                              <div className="pagination-numbers">
+                              <div className="pagination-numbers  scroller-x">
                                 {Array.from(
                                   {
                                     length: Math.ceil(

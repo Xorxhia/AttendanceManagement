@@ -2651,3 +2651,396 @@ svg[data-next-mark-loading] {
   display: none !important;
   visibility: hidden !important;
 }
+
+/* ===== Mobile drawer for sidebar (desktop unaffected) ===== */
+
+/* hamburger button – hidden on desktop */
+.hamburger-btn { display: none; }
+.hamburger-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #111827;
+  margin: 4px 0;
+}
+
+@media (max-width: 1024px) {
+  .hamburger-btn {
+    display: inline-flex;
+    flex-direction: column;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+
+  /* off-canvas sidebar */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: min(85vw, 320px);
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  /* show compact header in drawer; hide desktop header on mobile */
+  .sidebar-mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .sidebar-header { display: none; }
+
+  .sidebar-close-btn {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  /* overlay behind drawer */
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+    z-index: 1000;
+  }
+
+  /* attendance layout stacks on mobile */
+  .attendance-container { grid-template-columns: 1fr; height: auto; }
+  .employee-attendance-grid { max-height: none; }
+
+  /* minor spacing */
+  .content-area { padding: 20px; }
+  .card { padding: 20px; }
+}
+
+@media (max-width: 640px) {
+  .page-title { font-size: 18px; }
+  .user-info { display: none; }
+}
+/* ===== Horizontal slider for big tables (mobile only) ===== */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;                 /* horizontal scroll */
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #e5e7eb;        /* match table border */
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* Make the table wider than the viewport so it can scroll on small screens */
+@media (max-width: 1024px) {
+  .table-scroll .data-table {
+    min-width: 960px;               /* adjust if your table needs more room */
+  }
+
+  /* tighter cells on mobile for better density */
+  .data-table th,
+  .data-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+    white-space: nowrap;            /* keep cells from wrapping weirdly */
+  }
+
+  /* keep header readable while scrolling horizontally */
+  .data-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+}
+
+/* Optional: make the first column sticky so identity stays visible */
+@media (max-width: 1024px) {
+  .data-table td:first-child,
+  .data-table th:first-child {
+    position: sticky;
+    left: 0;
+    background: #fff;               /* match the table background */
+    z-index: 2;                      /* above other cells */
+    box-shadow: 1px 0 0 #e5e7eb;     /* subtle separator */
+  }
+}
+
+/* ===== Pagination: make numbers horizontally scrollable on mobile ===== */
+.scroller-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 60vw;                  /* don’t let it push layout */
+  display: flex;
+  gap: 4px;
+}
+
+.scroller-x .pagination-number {
+  flex: 0 0 auto;                   /* don’t shrink, keep button width */
+}
+
+/* Let the whole pagination bar wrap nicely on mobile */
+@media (max-width: 1024px) {
+  .pagination-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .pagination-controls {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pagination-info {
+    order: 2;
+  }
+  .pagination-controls {
+    order: 1;
+  }
+}
+
+/* Slightly smaller pagination buttons on tight screens */
+@media (max-width: 640px) {
+  .pagination-btn {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+  .pagination-number {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+}
+
+/* ===== Nice touch: fade shadows at table edges while scrolling ===== */
+.table-scroll {
+  position: relative;
+  mask-image: linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
+}
+@media (max-width: 1024px) {
+  .data-table td span,
+  .data-table td {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+/* ==== Insights: single-card stacking on mobile ==== */
+@media (max-width: 768px) {
+  /* 1) Force a single-column grid */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr !important;   /* one card per row */
+    gap: 12px !important;                    /* tight but breathable */
+  }
+
+  /* 2) Ensure every card stretches full width and doesn't overflow */
+  .charts-grid .chart-card,
+  .charts-grid .kpi-card {
+    min-width: 0;       /* let content shrink inside */
+    width: 100%;
+    padding: 16px;      /* slightly tighter padding on mobile */
+    border-radius: 12px;
+  }
+
+  /* 3) A "wide" card should NOT span multiple columns on mobile */
+  .charts-grid .chart-card.wide {
+    grid-column: auto / auto !important;
+  }
+
+  /* 4) Make internals behave nicely in narrow widths */
+  .line-chart,
+  .trend-chart,
+  .activity-chart,
+  .weekly-chart {
+    min-width: 0;
+  }
+
+  /* If the chart needs more width than the screen, allow horizontal scroll inside the card (not page) */
+  .line-chart,
+  .trend-chart {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;                  /* room for the scrollbar */
+  }
+
+  /* Keep labels readable on narrow screens */
+  .chart-label,
+  .trend-label,
+  .weekly-label {
+    font-size: 12px;
+  }
+
+  /* Slightly reduce default min-heights so cards don’t look huge on phones */
+  .chart-card {
+    min-height: 220px;
+  }
+}
+
+/* ==== Small phones polish (optional) ==== */
+@media (max-width: 420px) {
+  .charts-grid .chart-card,
+  .charts-grid .kpi-card {
+    padding: 14px;
+  }
+
+  .chart-title {
+    font-size: 1rem;
+  }
+
+  /* Keep KPI numbers legible but compact */
+  .metric-number {
+    font-size: 1.6rem;
+  }
+}
+/* ==== MOBILE-ONLY FIX for existing masked-bars loader (keeps same look) ==== */
+/* Put this AFTER your current .loader / ::before / ::after rules */
+@media (max-width: 768px) {
+  .loader {
+    /* lock integer box size; avoid aspect-ratio rounding on mobile GPUs */
+    --s: 50px;           /* same visual size as desktop */
+    --step: 10px;        /* same band spacing */
+    width: var(--s);
+    height: var(--s);
+    aspect-ratio: auto;  /* disable aspect-ratio on mobile */
+    display: grid;
+
+    /* stabilize rendering on WebKit/GPUs */
+    transform: translate3d(0,0,0);
+    -webkit-transform: translate3d(0,0,0);
+    backface-visibility: hidden;
+    will-change: transform;
+    contain: paint;
+  }
+
+  /* ensure pseudos fully cover the box and don’t shrink */
+  .loader::before,
+  .loader::after {
+    display: block;
+    grid-area: 1 / 1;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #10b981;
+  }
+
+  /* reapply masks with fixed pixel steps to avoid subpixel fuzz */
+  .loader::before {
+    -webkit-mask: repeating-linear-gradient(#000 0 var(--step), #0000 0 calc(var(--step) * 2));
+            mask: repeating-linear-gradient(#000 0 var(--step), #0000 0 calc(var(--step) * 2));
+  }
+  .loader::after {
+    -webkit-mask: repeating-linear-gradient(#0000 0 var(--step), #000 0 calc(var(--step) * 2));
+            mask: repeating-linear-gradient(#0000 0 var(--step), #000 0 calc(var(--step) * 2));
+
+    /* use a mobile-safe keyframe that moves in whole pixels */
+    animation: l36m 1.5s linear infinite;
+  }
+
+  /* same motion feel, but translate in pixel space + 3D to stop warping */
+  @keyframes l36m {
+    0%, 10%   { transform: rotate(0) translate3d(0, 0, 0); }
+    35%       { transform: rotate(0) translate3d(var(--s), 0, 0); }
+    66%       { transform: rotate(180deg) translate3d(var(--s), 0, 0); }
+    90%, 100% { transform: rotate(180deg) translate3d(0, 0, 0); }
+  }
+}
+/* Redirect overlay only when pushing to /admin; prevents flicker */
+.redirect-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #ffffff;
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  text-align: center;
+  color: #6b7280;
+}
+
+/* Keep spinner’s shape on all screens */
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(0,0,0,0.08);
+  border-top-color: #111827;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Already defined in your CSS; included here to avoid overrides */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==== Mobile-only staged hero → form (unchanged from previous message) ==== */
+@media (max-width: 768px) {
+  .signin-container {
+    position: relative;
+    display: block;
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+    background: #ffffff;
+  }
+
+  .signin-left,
+  .signin-right {
+    position: absolute !important;
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
+    margin: 0;
+    overflow: hidden;
+    transform: translateY(0);
+    opacity: 1;
+    transition: transform 420ms ease, opacity 420ms ease;
+    will-change: transform, opacity;
+  }
+
+  .mobile-stage-hero .signin-left { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  .mobile-stage-hero .signin-right { transform: translateY(100%); opacity: 0; pointer-events: none; }
+
+  .mobile-stage-form .signin-right { transform: translateY(0); opacity: 1; pointer-events: auto; background: #ffffff; }
+  .mobile-stage-form .signin-left  { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+
+  .signin-left {
+    padding: 40px 24px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .signin-right {
+    padding: 24px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+  }
+  .signin-card {
+    min-height: unset;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    background: #fff;
+  }
+
+  .background-decoration { display: none !important; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .signin-left, .signin-right { transition: none !important; }
+  }
+}
